@@ -1,50 +1,77 @@
-# Welcome to your Expo app 👋
+# IFSP Eventos Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo dos usuários do IFSP Eventos. Este diretório será o repositório independente `ifsp-eventos-mobile`; ele não compartilha `package.json`, branches ou pipeline com API/admin.
 
-## Get started
+## Stack e responsabilidades
 
-1. Install dependencies
+| Biblioteca | Uso |
+| --- | --- |
+| Expo + Expo Router | runtime e rotas por arquivos em `app/` |
+| NativeWind | estilos utilitários e tema compartilhado |
+| Axios | cliente HTTP único em `src/services/api/client.ts` |
+| TanStack Query | cache, estados de carregamento e invalidação |
+| React Hook Form + Zod | formulários e validação de entrada |
+| Expo Secure Store | tokens e segredos locais; nunca AsyncStorage para tokens |
 
-   ```bash
-   npm install
-   ```
+## Instalação e execução
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```powershell
+Copy-Item .env.example .env
+npm ci
+npm start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Use `npm run android`, `npm run ios` ou `npm run web` conforme o alvo. Para dispositivo físico, `EXPO_PUBLIC_API_URL` deve apontar para o IP LAN da máquina que roda a API, por exemplo `http://192.168.0.10:3000/api`; `localhost` não funciona no celular. Nunca coloque token ou senha em variável `EXPO_PUBLIC_*`.
 
-## Learn more
+## Estrutura e onde escrever código
 
-To learn more about developing your project with Expo, look at the following resources:
+```text
+app/                 rotas, layouts e grupos de navegação
+src/components/ui/   controles genéricos e sem regra de negócio
+src/components/shared/ componentes compostos reutilizáveis
+src/features/        telas, hooks e lógica isolada por domínio
+src/services/api/    cliente Axios e serviços HTTP por domínio
+src/services/query/  QueryClient, keys e hooks de consulta/mutação
+src/theme/           tokens globais
+src/types/           tipos compartilhados
+src/utils/           funções puras reutilizáveis
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Não faça requisições dentro de componentes visuais. Uma feature deve expor hooks Query/Mutation; telas chamam esses hooks; serviços usam `apiClient`. Toda mutação deve invalidar as query keys relacionadas. Páginas vivem em `app/`; navegação comum é declarada em `_layout.tsx`.
 
-## Join the community
+## Convenções
 
-Join our community of developers creating universal apps.
+- Arquivos: `kebab-case.ts`; componentes e tipos: `PascalCase`; hooks: `use-<nome>.ts`.
+- Interfaces de API são tipadas; proíba `any`. Valide formulários com Zod antes de chamar serviços.
+- Cores, fontes e espaçamentos não podem ser espalhados: use `tailwind.config.js` e `src/theme/tokens.ts`.
+- Estados de carregamento, vazio, erro e acessibilidade são parte da entrega de cada tela.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Scripts de qualidade
+
+| Comando | Finalidade |
+| --- | --- |
+| `npm run lint` | regras Expo/ESLint |
+| `npm run typecheck` | TypeScript sem emissão |
+| `npm run format:check` | validação Prettier |
+| `npm run format` | formatação automática |
+
+## Branches planejadas
+
+Crie todas a partir de `develop`, uma por PR, e só inicie a próxima quando o contrato da API necessário estiver definido.
+
+| Branch | Escopo |
+| --- | --- |
+| `chore/mobile-project-setup` | ajustes de tooling e CI do aplicativo |
+| `feature/auth-screens` | login, cadastro, recuperação e verificação de e-mail |
+| `feature/auth-session` | Secure Store, sessão e proteção de rotas |
+| `feature/home` | home e feed inicial |
+| `feature/events-explore` | explorar, filtros e detalhes de eventos |
+| `feature/event-comments` | comentários/chat e favoritos |
+| `feature/institutions` | lista, detalhes e seguir instituições |
+| `feature/ifsp-content` | Panorama, homenagens, calendário e documentos |
+| `feature/profile` | perfil e configurações |
+| `test/mobile-critical-flows` | testes dos fluxos críticos |
+
+## ESTRUTURA FINAL DO APLICATIVO
+
+Quando concluído, o app conterá landing, autenticação, home, explorar eventos, detalhes, comentários, instituições, seguidores, Panorama IFSP, homenagens, calendário acadêmico, editais/documentos, favoritos, perfil e configurações. Cada domínio terá rotas, componentes, serviços, tipos, validações e testes próprios.
