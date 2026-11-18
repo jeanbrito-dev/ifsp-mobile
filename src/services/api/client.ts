@@ -25,7 +25,6 @@ apiClient.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch {
-      // In case storage lookup fails, continue request without token
     }
     return config;
   },
@@ -43,9 +42,3 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-import axios from 'axios';
-export const apiClient = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL,
-  timeout: 10_000,
-  headers: { Accept: 'application/json' },
-});
