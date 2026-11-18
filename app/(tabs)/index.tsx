@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../src/contexts/auth-context';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../src/components/ui/button';
+import { useAuth } from '../../src/contexts/auth-context';
 
 export default function HomeRoute() {
   const router = useRouter();
@@ -86,13 +86,13 @@ export default function HomeRoute() {
           <View className="space-y-2.5">
             <Button
               title="Cadastrar Nova Instituição"
-              onPress={() => router.push('/instituicoes/cadastro')}
+              onPress={() => router.push('../instituicoes/cadastro.tsx')}
               leftIcon={<Ionicons name="add-circle" size={18} color="#FFFFFF" />}
             />
             <Button
               title="Ver Instituições Cadastradas"
               variant="outline"
-              onPress={() => router.push('/instituicoes')}
+              onPress={() => router.push('../instituicoes')}
               leftIcon={<Ionicons name="list" size={18} color="#005C3B" />}
               style={{ marginTop: 8 }}
             />
