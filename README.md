@@ -4,14 +4,14 @@ Aplicativo dos usuários do IFSP Eventos. Este diretório será o repositório i
 
 ## Stack e responsabilidades
 
-| Biblioteca | Uso |
-| --- | --- |
-| Expo + Expo Router | runtime e rotas por arquivos em `app/` |
-| NativeWind | estilos utilitários e tema compartilhado |
-| Axios | cliente HTTP único em `src/services/api/client.ts` |
-| TanStack Query | cache, estados de carregamento e invalidação |
-| React Hook Form + Zod | formulários e validação de entrada |
-| Expo Secure Store | tokens e segredos locais; nunca AsyncStorage para tokens |
+| Biblioteca            | Uso                                                      |
+| --------------------- | -------------------------------------------------------- |
+| Expo + Expo Router    | runtime e rotas por arquivos em `app/`                   |
+| NativeWind            | estilos utilitários e tema compartilhado                 |
+| Axios                 | cliente HTTP único em `src/services/api/client.ts`       |
+| TanStack Query        | cache, estados de carregamento e invalidação             |
+| React Hook Form + Zod | formulários e validação de entrada                       |
+| Expo Secure Store     | tokens e segredos locais; nunca AsyncStorage para tokens |
 
 ## Instalação e execução
 
@@ -48,29 +48,29 @@ Não faça requisições dentro de componentes visuais. Uma feature deve expor h
 
 ## Scripts de qualidade
 
-| Comando | Finalidade |
-| --- | --- |
-| `npm run lint` | regras Expo/ESLint |
-| `npm run typecheck` | TypeScript sem emissão |
-| `npm run format:check` | validação Prettier |
-| `npm run format` | formatação automática |
+| Comando                | Finalidade             |
+| ---------------------- | ---------------------- |
+| `npm run lint`         | regras Expo/ESLint     |
+| `npm run typecheck`    | TypeScript sem emissão |
+| `npm run format:check` | validação Prettier     |
+| `npm run format`       | formatação automática  |
 
 ## Branches planejadas
 
 Crie todas a partir de `develop`, uma por PR, e só inicie a próxima quando o contrato da API necessário estiver definido.
 
-| Branch | Escopo |
-| --- | --- |
-| `chore/mobile-project-setup` | ajustes de tooling e CI do aplicativo |
-| `feature/auth-screens` | login, cadastro, recuperação e verificação de e-mail |
-| `feature/auth-session` | Secure Store, sessão e proteção de rotas |
-| `feature/home` | home e feed inicial |
-| `feature/events-explore` | explorar, filtros e detalhes de eventos |
-| `feature/event-comments` | comentários/chat e favoritos |
-| `feature/institutions` | lista, detalhes e seguir instituições |
-| `feature/ifsp-content` | Panorama, homenagens, calendário e documentos |
-| `feature/profile` | perfil e configurações |
-| `test/mobile-critical-flows` | testes dos fluxos críticos |
+| Branch                       | Escopo                                               |
+| ---------------------------- | ---------------------------------------------------- |
+| `chore/mobile-project-setup` | ajustes de tooling e CI do aplicativo                |
+| `feature/auth-screens`       | login, cadastro, recuperação e verificação de e-mail |
+| `feature/auth-session`       | Secure Store, sessão e proteção de rotas             |
+| `feature/home`               | home e feed inicial                                  |
+| `feature/events-explore`     | explorar, filtros e detalhes de eventos              |
+| `feature/event-comments`     | comentários/chat e favoritos                         |
+| `feature/institutions`       | lista, detalhes e seguir instituições                |
+| `feature/ifsp-content`       | Panorama, homenagens, calendário e documentos        |
+| `feature/profile`            | perfil e configurações                               |
+| `test/mobile-critical-flows` | testes dos fluxos críticos                           |
 
 ## ESTRUTURA FINAL DO APLICATIVO
 
