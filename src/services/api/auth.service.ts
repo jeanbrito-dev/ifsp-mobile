@@ -1,13 +1,13 @@
-import { apiClient } from './client';
 import {
+  ApiMessageResponse,
   AuthResponse,
+  ForgotPasswordRequest,
   LoginCredentials,
   RegisterCredentials,
-  ForgotPasswordRequest,
   ResetPasswordRequest,
-  ApiMessageResponse,
   User,
 } from '../../types/auth';
+import { apiClient } from './client';
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {

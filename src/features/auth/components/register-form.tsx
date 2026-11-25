@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'expo-router';
-import { isAxiosError } from 'axios';
 import { Ionicons } from '@expo/vector-icons';
-import { Input } from '../../../components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { isAxiosError } from 'axios';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../../components/ui/button';
-import { registerSchema, RegisterFormData } from '../validations/auth.schema';
+import { Input } from '../../../components/ui/input';
 import { useAuth } from '../hooks/use-auth';
+import { RegisterFormData, registerSchema } from '../validations/auth.schema';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -34,6 +34,8 @@ export function RegisterForm() {
       setServerError(null);
       await signUp(data);
     } catch (err) {
+      console.log('Erro no signUp:', err);
+
       if (isAxiosError(err)) {
         const responseData = err.response?.data as
           | { message?: string | string[]; error?: string }
