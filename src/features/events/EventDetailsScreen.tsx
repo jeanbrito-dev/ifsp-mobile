@@ -23,6 +23,10 @@ interface EventDetailsScreenProps {
   isFavorite: boolean;
   currentUser?: EventUser;
   commentsLoading?: boolean;
+
+  commentsError?: string | null;
+  onRetryComments?: () => void;
+
   onBack: () => void;
   onToggleFavorite: () => void | Promise<void>;
   onSubmitComment: (message: string) => void | Promise<void>;
@@ -35,6 +39,10 @@ export function EventDetailsScreen({
   isFavorite,
   currentUser,
   commentsLoading = false,
+
+  commentsError,
+  onRetryComments,
+
   onBack,
   onToggleFavorite,
   onSubmitComment,
@@ -145,19 +153,43 @@ export function EventDetailsScreen({
           <Text style={styles.commentCount}>{comments.length}</Text>
         </View>
 
+
         {commentsLoading ? (
           <View style={styles.loadingComments}>
             <ActivityIndicator color={GREEN} />
           </View>
+        ) : commentsError ? (
+          <View style={styles.commentsErrorContainer}>
+            <Text style={styles.commentsErrorText}>
+              {commentsError}
+            </Text>
+
+            {onRetryComments && (
+              <Pressable
+                onPress={onRetryComments}
+                style={styles.retryCommentsButton}
+              >
+                <Text style={styles.retryCommentsText}>
+                  Tentar novamente
+                </Text>
+              </Pressable>
+            )}
+          </View>
         ) : comments.length === 0 ? (
-          <Text style={styles.noComments}>Seja a primeira pessoa a comentar sobre este evento.</Text>
+          <Text style={styles.noComments}>
+            Seja a primeira pessoa a comentar sobre este evento.
+          </Text>
         ) : (
           <View style={styles.commentsList}>
             {comments.map((comment) => (
-              <CommentItem key={comment.id} comment={comment} />
+              <CommentItem
+                key={comment.id}
+                comment={comment}
+              />
             ))}
           </View>
         )}
+
 
         {feedback.length > 0 && <Text accessibilityRole="alert" style={styles.feedback}>{feedback}</Text>}
 
@@ -225,18 +257,21 @@ function CommentItem({ comment }: { comment: EventComment }) {
 
 
 const styles = StyleSheet.create({
+
+  
+
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
 
-header: {
-  minHeight: 56,
-  paddingHorizontal: 16,
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-},
+  header: {
+    minHeight: 56,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
 
   headerActions: {
     flexDirection: 'row',
@@ -259,13 +294,13 @@ header: {
     paddingBottom: 35,
   },
 
-heroImage: {
-  height: 205,
-  width: '100%',
-  alignSelf: 'center',
-  borderRadius: 10,
-  marginTop: 10,
-},
+  heroImage: {
+    height: 205,
+    width: '100%',
+    alignSelf: 'center',
+    borderRadius: 10,
+    marginTop: 10,
+  },
 
   socialActions: {
     flexDirection: 'row',
@@ -281,31 +316,31 @@ heroImage: {
     justifyContent: 'center',
   },
 
-titleBar: {
-  minHeight: 52,
-  backgroundColor: GREEN,
-  borderRadius: 8,
-  alignItems: 'center',
-  justifyContent: 'center',
-  paddingHorizontal: 14,
-  paddingVertical: 9,
-},
+  titleBar: {
+    minHeight: 52,
+    backgroundColor: GREEN,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+  },
 
-eventTitle: {
-  color: '#FFFFFF',
-  fontSize: 19,
-  lineHeight: 25,
-  fontWeight: '700',
-  textAlign: 'center',
-},
+  eventTitle: {
+    color: '#FFFFFF',
+    fontSize: 19,
+    lineHeight: 25,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
 
-eventInfo: {
-  flexDirection: 'row',
-  alignItems: 'stretch',
-  marginTop: 12,
-  marginBottom: 17,
-  gap: 10,
-},
+  eventInfo: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    marginTop: 12,
+    marginBottom: 17,
+    gap: 10,
+  },
 
   descriptionColumn: {
     flex: 1,
@@ -313,34 +348,34 @@ eventInfo: {
   },
 
 
-description: {
-  color: '#3D3D3D',
-  fontSize: 13,
-  lineHeight: 19,
-},
+  description: {
+    color: '#3D3D3D',
+    fontSize: 13,
+    lineHeight: 19,
+  },
 
-metadataColumn: {
-  width: '43%',
-  minHeight: 145,
-  borderWidth: 1,
-  borderColor: GREEN,
-  borderRadius: 10,
-  paddingHorizontal: 10,
-  paddingVertical: 10,
-},
+  metadataColumn: {
+    width: '43%',
+    minHeight: 145,
+    borderWidth: 1,
+    borderColor: GREEN,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
 
-metadataLabel: {
-  color: GREEN,
-  fontSize: 12,
-  lineHeight: 17,
-  fontWeight: '700',
-},
+  metadataLabel: {
+    color: GREEN,
+    fontSize: 12,
+    lineHeight: 17,
+    fontWeight: '700',
+  },
 
-metadataValue: {
-  color: GREEN,
-  fontSize: 12,
-  lineHeight: 17,
-},
+  metadataValue: {
+    color: GREEN,
+    fontSize: 12,
+    lineHeight: 17,
+  },
 
   metadataGap: {
     marginTop: 10,
@@ -354,17 +389,17 @@ metadataValue: {
     marginBottom: 12,
   },
 
-commentsTitle: {
-  color: '#252525',
-  fontSize: 19,
-  fontWeight: '700',
-},
+  commentsTitle: {
+    color: '#252525',
+    fontSize: 19,
+    fontWeight: '700',
+  },
 
-commentCount: {
-  color: GREEN,
-  fontSize: 14,
-  fontWeight: '600',
-},
+  commentCount: {
+    color: GREEN,
+    fontSize: 14,
+    fontWeight: '600',
+  },
 
   loadingComments: {
     paddingVertical: 25,
@@ -382,18 +417,18 @@ commentCount: {
     gap: 10,
   },
 
-commentCard: {
-  minHeight: 62,
-  paddingHorizontal: 10,
-  paddingVertical: 9,
-  borderRadius: 9,
-  borderLeftWidth: 3,
-  borderLeftColor: GREEN,
-  backgroundColor: '#F7F7F7',
-  flexDirection: 'row',
-  alignItems: 'flex-start',
-  gap: 9,
-},
+  commentCard: {
+    minHeight: 62,
+    paddingHorizontal: 10,
+    paddingVertical: 9,
+    borderRadius: 9,
+    borderLeftWidth: 3,
+    borderLeftColor: GREEN,
+    backgroundColor: '#F7F7F7',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 9,
+  },
 
   avatarImage: {
     width: 36,
@@ -428,23 +463,23 @@ commentCard: {
     gap: 8,
   },
 
-commentAuthor: {
-  color: GREEN,
-  fontSize: 13,
-  fontWeight: '700',
-},
+  commentAuthor: {
+    color: GREEN,
+    fontSize: 13,
+    fontWeight: '700',
+  },
 
-commentDate: {
-  color: '#8A8A8A',
-  fontSize: 10,
-},
+  commentDate: {
+    color: '#8A8A8A',
+    fontSize: 10,
+  },
 
-commentMessage: {
-  color: '#353535',
-  fontSize: 13,
-  lineHeight: 19,
-  marginTop: 3,
-},
+  commentMessage: {
+    color: '#353535',
+    fontSize: 13,
+    lineHeight: 19,
+    marginTop: 3,
+  },
 
   feedback: {
     color: '#B3261E',
@@ -467,14 +502,14 @@ commentMessage: {
     gap: 9,
   },
 
-commentInput: {
-  flex: 1,
-  minHeight: 38,
-  maxHeight: 90,
-  color: '#252525',
-  fontSize: 14,
-  paddingVertical: 5,
-},
+  commentInput: {
+    flex: 1,
+    minHeight: 38,
+    maxHeight: 90,
+    color: '#252525',
+    fontSize: 14,
+    paddingVertical: 5,
+  },
 
   sendButton: {
     width: 41,
@@ -495,5 +530,33 @@ commentInput: {
     marginTop: 7,
     marginLeft: 3,
   },
+
+
+commentsErrorContainer: {
+  alignItems: 'center',
+  paddingVertical: 16,
+  gap: 10,
+},
+
+commentsErrorText: {
+  color: '#B3261E',
+  fontSize: 13,
+  textAlign: 'center',
+},
+
+retryCommentsButton: {
+  paddingHorizontal: 15,
+  paddingVertical: 9,
+  borderRadius: 8,
+  borderWidth: 1,
+  borderColor: GREEN,
+},
+
+retryCommentsText: {
+  color: GREEN,
+  fontSize: 13,
+  fontWeight: '600',
+},
+
 });
 

@@ -2,10 +2,10 @@
 import React, { useState } from 'react';
 
 import {
+  ActivityIndicator,
   Pressable,
   StyleSheet,
   Text,
-  View,
 } from 'react-native';
 
 import {
@@ -17,39 +17,63 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EventDetailsScreen } from '../../src/features/events/EventDetailsScreen';
 
-import type { EventComment } from '../../src/features/events/types';
+import { useEvent } from '../../src/features/events/hooks/use-events';
 
-import {
-  DEMO_EVENTS,
-  DEMO_COMMENTS,
-} from '../../src/features/events/demo-data';
+import { useEventComments } from '../../src/features/events/hooks/use-event-comments';
+
+import { useAuth } from '../../src/contexts/auth-context';
 
 export default function EventDetailsRoute() {
   const router = useRouter();
 
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const event = DEMO_EVENTS.find(
-    (item) => item.id === id
-  );
+  const { user } = useAuth();
 
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const [comments, setComments] =
-    useState<EventComment[]>(DEMO_COMMENTS);
+  const eventQuery = useEvent(id);
 
-  if (!event) {
+  const commentsQuery = useEventComments(id);
+
+  if (eventQuery.isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator
+          size="large"
+          color="#259B4B"
+        />
+
+        <Text style={styles.loadingText}>
+          Carregando evento...
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (eventQuery.isError || !eventQuery.data) {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>
-          Evento não encontrado.
+          Não foi possível carregar o evento.
         </Text>
 
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => {
+            void eventQuery.refetch();
+          }}
           style={styles.button}
         >
           <Text style={styles.buttonText}>
+            Tentar novamente
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <Text style={styles.backButtonText}>
             Voltar
           </Text>
         </Pressable>
@@ -57,29 +81,39 @@ export default function EventDetailsRoute() {
     );
   }
 
-  function handleComment(message: string) {
-    setComments((previous) => [
-      ...previous,
-      {
-        id: String(Date.now()),
-        authorName: 'Você',
-        message,
-        createdAtLabel: 'Agora',
-      },
-    ]);
-  }
-
   return (
     <EventDetailsScreen
-      event={event}
-      comments={comments}
+      event={eventQuery.data}
+
+      comments={commentsQuery.comments}
+
+      commentsLoading={commentsQuery.isLoading}
+
+      commentsError={
+        commentsQuery.isError
+          ? 'Não foi possível carregar os comentários.'
+          : null
+      }
+
+      onRetryComments={() => {
+        void commentsQuery.refetch();
+      }}
+
       isFavorite={isFavorite}
-      currentUser={{ name: 'Você' }}
+
+      currentUser={{
+        name: user?.nome ?? 'Usuário',
+      }}
+
       onBack={() => router.back()}
+
       onToggleFavorite={() => {
         setIsFavorite((previous) => !previous);
       }}
-      onSubmitComment={handleComment}
+
+      onSubmitComment={async (message) => {
+        await commentsQuery.createComment(message);
+      }}
     />
   );
 }
@@ -90,11 +124,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
+    padding: 24,
   },
+
+  loadingText: {
+    marginTop: 12,
+    color: '#555555',
+    fontSize: 14,
+  },
+
   title: {
     fontSize: 17,
     color: '#333333',
+    textAlign: 'center',
   },
+
   button: {
     backgroundColor: '#259B4B',
     paddingHorizontal: 20,
@@ -102,7 +146,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 15,
   },
+
   buttonText: {
     color: '#FFFFFF',
+    fontWeight: '600',
+  },
+
+  backButton: {
+    marginTop: 15,
+    padding: 10,
+  },
+
+  backButtonText: {
+    color: '#259B4B',
   },
 });

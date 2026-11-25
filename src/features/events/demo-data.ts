@@ -1,5 +1,5 @@
 
-import type { EventComment, EventDetails } from './types';
+import type { EventDetails } from './types';
 
 export const DEMO_EVENTS: EventDetails[] = [
   {
@@ -72,23 +72,3 @@ export const DEMO_INSTITUTIONS = [
   'NAPNE',
 ];
 
-export const DEMO_COMMENTS: EventComment[] = [
-  {
-    id: '1',
-    authorName: 'Júlia',
-    message: 'Essa mostra vai ser incrível!',
-    createdAtLabel: '18/11 • 10:20',
-  },
-  {
-    id: '2',
-    authorName: 'Amanda',
-    message: 'Ansiosa para ver meu primeiro projeto!',
-    createdAtLabel: '18/11 • 11:05',
-  },
-  {
-    id: '3',
-    authorName: 'Reinan',
-    message: 'Aí sim, estou dentro!',
-    createdAtLabel: '18/11 • 12:30',
-  },
-];
